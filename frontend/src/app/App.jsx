@@ -8,9 +8,11 @@ import BasicDetails from "../pages/BasicDetails";
 import LocationSetup from "../pages/LocationSetup";
 import Home from "../pages/Home";
 import ReportEmergency from "../pages/ReportEmergency";
-
+import AuthorityDashboard from "../pages/AuthorityDashboard";
 import Incidents from "../pages/Incidents";
 import Resources from "../pages/Resources";
+import ResourceAllocation from "../pages/ResourceAllocation";
+
 function App() {
   return (
     <BrowserRouter>
@@ -46,6 +48,12 @@ function App() {
  
   <Route path="/incidents" element={<Incidents />} />
   <Route path="/resources" element={<Resources />} />
+  <Route path="/authority" element={<AuthorityDashboard />} />
+  <Route
+  path="/resource-allocation"
+  element={<ResourceAllocation />}
+/>
+<Route path="/incidents" element={<Incidents />} />
 
 </Routes>
     </BrowserRouter>

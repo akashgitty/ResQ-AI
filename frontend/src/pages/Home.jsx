@@ -3,6 +3,26 @@ import { Link } from "react-router-dom";
 import DisasterMap from "../components/DisasterMap";
 
 function Home() {
+  const [message, setMessage] = React.useState("");
+  const [chatReply, setChatReply] = React.useState(
+    "I can help with disaster preparedness, emergency procedures and safety guidance."
+  );
+
+  const sendMessage = () => {
+    const text = message.trim().toLowerCase();
+    if (!text) return;
+    if (text.includes("flood")) {
+      setChatReply("During a flood, move to higher ground, avoid fast-moving water and follow local authority instructions.");
+    } else if (text.includes("fire")) {
+      setChatReply("For a fire emergency, move away from smoke and flames, use the nearest safe exit and contact emergency services.");
+    } else if (text.includes("earthquake")) {
+      setChatReply("During an earthquake, Drop, Cover and Hold On. After shaking stops, move to a safe area if necessary.");
+    } else {
+      setChatReply("For an immediate emergency, use Report Emergency to share the incident, location and available evidence with responders.");
+    }
+    setMessage("");
+  };
+
   return (
     <div className="min-h-screen bg-[#050b14] text-white">
 
@@ -41,10 +61,10 @@ function Home() {
             </Link>
 
             <a
-              href="#news"
+              href="#alerts"
               className="text-sm text-slate-300 transition hover:text-white"
             >
-              News
+              Alerts
             </a>
 
             <a
@@ -54,19 +74,27 @@ function Home() {
               AI Assistant
             </a>
           </div>
+<div className="flex items-center gap-3">
 
-          <div className="flex items-center gap-3">
-            <div className="hidden text-right sm:block">
-              <p className="text-xs text-slate-400">SYSTEM STATUS</p>
-              <p className="text-xs font-semibold text-emerald-400">
-                ● OPERATIONAL
-              </p>
-            </div>
+  <Link
+    to="/authority"
+    className="rounded-xl border border-cyan-400/30 bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-300 transition hover:bg-cyan-400/20"
+  >
+    🛡️ Authority Dashboard
+  </Link>
 
-            <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5">
-              👤
-            </div>
-          </div>
+  <div className="hidden text-right sm:block">
+    <p className="text-xs text-slate-400">SYSTEM STATUS</p>
+    <p className="text-xs font-semibold text-emerald-400">
+      ● OPERATIONAL
+    </p>
+  </div>
+
+  <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5">
+    👤
+  </div>
+
+</div>
 
         </div>
       </nav>
@@ -272,120 +300,68 @@ function Home() {
         </section>
 
 
-        {/* NEWS + CHAT */}
+        {/* SEVERE ALERT + AI ASSISTANT */}
         <section className="mt-8 grid gap-6 lg:grid-cols-2">
-
-          {/* NEWS */}
-          <div
-            id="news"
-            className="rounded-3xl border border-white/10 bg-[#081421] p-6"
-          >
-
-            <div className="flex items-center justify-between">
-
-              <div>
-                <p className="text-sm text-slate-500">
-                  INFORMATION
-                </p>
-
-                <h3 className="mt-1 text-2xl font-bold">
-                  Latest Disaster News
-                </h3>
-              </div>
-
-              <span className="rounded-full bg-cyan-400/10 px-3 py-1 text-xs text-cyan-300">
-                LIVE FEED
-              </span>
-
-            </div>
-
-            <div className="mt-6 space-y-3">
-
-              {[
-                "Heavy rainfall warning issued for multiple regions.",
-                "Authorities monitoring flood-prone areas.",
-                "Emergency response teams remain on standby.",
-              ].map((news, index) => (
-
-                <div
-                  key={index}
-                  className="rounded-2xl border border-white/5 bg-white/3 p-4 transition hover:bg-white/6"
-                >
-                  <div className="flex gap-3">
-
-                    <div className="mt-1 h-2 w-2 rounded-full bg-cyan-400" />
-
-                    <div>
-                      <p className="text-sm leading-6 text-slate-300">
-                        {news}
-                      </p>
-
-                      <p className="mt-1 text-xs text-slate-600">
-                        Recently updated
-                      </p>
-                    </div>
-
+          {/* SEVERE ALERT */}
+          <div id="alerts" className="rounded-3xl border border-red-500/20 bg-linear-to-br from-red-500/10 to-[#081421] p-6">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex gap-4">
+                <div className="flex h-14 w-14 shrink-0 animate-pulse items-center justify-center rounded-2xl bg-red-500/10 text-2xl">🚨</div>
+                <div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="text-xs font-bold tracking-widest text-red-400">SEVERE ALERT</p>
+                    <span className="rounded-full bg-red-500/10 px-2 py-1 text-[10px] text-red-300">DEMO DATA</span>
                   </div>
+                  <h3 className="mt-2 text-2xl font-bold">Flood risk requires attention</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-400">A high-priority incident can be reported and analyzed through ResQ-AI. Live alerts will be connected through the backend.</p>
                 </div>
-
-              ))}
-
+              </div>
+              <span className="shrink-0 rounded-full bg-red-500/10 px-3 py-1 text-xs font-semibold text-red-300">HIGH</span>
             </div>
 
+            <div className="mt-6 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl border border-white/5 bg-black/10 p-4"><p className="text-xs text-slate-500">Incident</p><p className="mt-1 font-semibold">Flood</p></div>
+              <div className="rounded-2xl border border-white/5 bg-black/10 p-4"><p className="text-xs text-slate-500">Status</p><p className="mt-1 font-semibold text-yellow-300">Monitoring</p></div>
+              <div className="rounded-2xl border border-white/5 bg-black/10 p-4"><p className="text-xs text-slate-500">Action</p><p className="mt-1 font-semibold">Verify</p></div>
+            </div>
           </div>
 
-
-          {/* CHAT */}
-          <div
-            id="assistant"
-            className="rounded-3xl border border-purple-400/10 bg-[#081421] p-6"
-          >
-
+          {/* AI ASSISTANT */}
+          <div id="assistant" className="rounded-3xl border border-purple-400/10 bg-[#081421] p-6">
             <div className="flex items-center gap-3">
-
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-400/10 text-2xl">
-                🤖
-              </div>
-
-              <div>
-                <p className="text-sm text-slate-500">
-                  RESQ-AI ASSISTANT
-                </p>
-
-                <h3 className="text-2xl font-bold">
-                  Disaster Assistant
-                </h3>
-              </div>
-
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-400/10 text-2xl">🤖</div>
+              <div><p className="text-sm text-slate-500">RESQ-AI ASSISTANT</p><h3 className="text-2xl font-bold">Disaster Assistant</h3></div>
             </div>
-
-            <div className="mt-6 rounded-2xl border border-white/5 bg-white/3 p-5">
-
-              <p className="text-sm leading-6 text-slate-400">
-                Ask about disaster preparedness, emergency procedures,
-                evacuation planning or what to do during a disaster.
-              </p>
-
-            </div>
-
+            <div className="mt-6 rounded-2xl border border-white/5 bg-white/3 p-5"><p className="text-sm leading-6 text-slate-300">{chatReply}</p></div>
             <div className="mt-4 flex gap-3">
-
-              <input
-                type="text"
-                placeholder="Ask ResQ-AI..."
-                className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-600 focus:border-purple-400/50"
-              />
-
-              <button className="rounded-xl bg-purple-500 px-5 font-bold transition hover:bg-purple-400">
-                →
-              </button>
-
+              <input value={message} onChange={(e) => setMessage(e.target.value)} onKeyDown={(e) => e.key === "Enter" && sendMessage()} type="text" placeholder="Ask ResQ-AI..." className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-600 focus:border-purple-400/50" />
+              <button onClick={sendMessage} className="rounded-xl bg-purple-500 px-5 font-bold transition hover:bg-purple-400">→</button>
             </div>
-
+            <p className="mt-3 text-[11px] text-slate-600">Prototype assistant. Emergency decisions should follow authorized responder instructions.</p>
           </div>
-
         </section>
 
+        {/* INCIDENT SNAPSHOT */}
+        <section className="mt-8 rounded-3xl border border-white/10 bg-[#081421] p-6">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div><p className="text-sm text-slate-500">RESPONSE CENTER</p><h3 className="mt-1 text-2xl font-bold">Recent Incidents</h3></div>
+            <span className="text-xs text-slate-500">Prototype data • backend integration pending</span>
+          </div>
+          <div className="mt-6 grid gap-4 md:grid-cols-3">
+            {[
+              ["INC-001", "Flood", "Critical", "Rescue + Medical", "🔴"],
+              ["INC-002", "Fire", "High", "Fire Response", "🟠"],
+              ["INC-003", "Landslide", "Medium", "Assessment", "🟡"],
+            ].map(([id, type, severity, needs, icon]) => (
+              <div key={id} className="rounded-2xl border border-white/5 bg-white/3 p-5 transition hover:border-cyan-400/20 hover:bg-white/5">
+                <div className="flex items-center justify-between"><span className="text-2xl">{icon}</span><span className="text-[10px] font-semibold tracking-wider text-slate-500">{id}</span></div>
+                <h4 className="mt-4 text-lg font-bold">{type}</h4>
+                <p className="mt-1 text-sm text-slate-400">Priority: <span className="text-slate-200">{severity}</span></p>
+                <p className="mt-3 text-xs text-slate-500">Needs: {needs}</p>
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* EMERGENCY BANNER */}
         <section className="mt-8 overflow-hidden rounded-3xl border border-red-500/20 bg-linear-to-r from-red-500/10 to-orange-500/5 p-6">
