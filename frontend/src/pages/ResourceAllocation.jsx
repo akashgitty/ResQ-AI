@@ -23,9 +23,9 @@ const ResourceAllocation = () => {
 
   const [deploymentStatus, setDeploymentStatus] = useState("Pending");
 
-  const handleApprove = () => {
-    setDeploymentStatus("Deployment Approved");
-  };
+ const handleApprove = () => {
+  setDeploymentStatus("Approved");
+};
 
   const handleModify = () => {
     setAllocation({
@@ -359,54 +359,121 @@ const ResourceAllocation = () => {
 
         </div>
 
-        {/* Deployment Status */}
-        <section className="mt-6 rounded-2xl border border-slate-800 bg-slate-900 p-6">
+        {/* DEPLOYMENT TRACKER */}
+<section className="mt-6 rounded-3xl border border-white/10 bg-[#081421] p-6">
 
-          <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+  <div className="mb-6">
+    <p className="text-xs font-semibold tracking-[0.2em] text-cyan-400">
+      RESPONSE TRACKING
+    </p>
 
-            <div>
-              <p className="text-sm text-slate-400">
-                Deployment Status
-              </p>
+    <h3 className="mt-2 text-2xl font-bold">
+      Deployment Status
+    </h3>
 
-              <div className="mt-2 flex items-center gap-3">
+    <p className="mt-2 text-sm text-slate-400">
+      Track the response lifecycle after the allocation is reviewed.
+    </p>
+  </div>
 
-                <span
-                  className={`h-3 w-3 rounded-full ${
-                    deploymentStatus === "Pending"
-                      ? "bg-yellow-400"
-                      : "bg-emerald-400"
-                  }`}
-                />
+  <div className="grid gap-3 sm:grid-cols-5">
 
-                <span className="font-semibold">
-                  {deploymentStatus}
-                </span>
+    {[
+      "Pending",
+      "Approved",
+      "Dispatched",
+      "On Scene",
+      "Completed",
+    ].map((step, index) => {
 
-              </div>
-            </div>
+      const steps = [
+        "Pending",
+        "Approved",
+        "Dispatched",
+        "On Scene",
+        "Completed",
+      ];
 
-            <div className="flex flex-wrap gap-3">
+      const currentIndex = steps.indexOf(deploymentStatus);
+      const stepIndex = index;
 
-              <button
-                onClick={handleModify}
-                className="rounded-xl border border-slate-700 px-5 py-3 text-sm font-semibold text-slate-300 transition hover:bg-slate-800"
-              >
-                Modify Allocation
-              </button>
+      const completed = stepIndex <= currentIndex;
 
-              <button
-                onClick={handleApprove}
-                className="rounded-xl bg-cyan-500 px-5 py-3 text-sm font-bold text-slate-950 transition hover:bg-cyan-400"
-              >
-                Approve Deployment
-              </button>
+      return (
+        <div
+          key={step}
+          className={`rounded-2xl border p-4 text-center transition ${
+            completed
+              ? "border-cyan-400/30 bg-cyan-400/10"
+              : "border-white/10 bg-white/5"
+          }`}
+        >
 
-            </div>
-
+          <div
+            className={`mx-auto flex h-10 w-10 items-center justify-center rounded-full ${
+              completed
+                ? "bg-cyan-400 text-black"
+                : "bg-white/10 text-slate-500"
+            }`}
+          >
+            {stepIndex + 1}
           </div>
 
-        </section>
+          <p
+            className={`mt-3 text-sm font-semibold ${
+              completed
+                ? "text-cyan-300"
+                : "text-slate-500"
+            }`}
+          >
+            {step}
+          </p>
+
+        </div>
+      );
+    })}
+
+  </div>
+
+  {/* CURRENT STATUS + NEXT ACTION */}
+  <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+
+    <div>
+      <p className="text-xs text-slate-500">
+        CURRENT STATUS
+      </p>
+
+      <p className="mt-1 text-lg font-bold text-cyan-300">
+        {deploymentStatus}
+      </p>
+    </div>
+
+    {deploymentStatus !== "Completed" && (
+      <button
+        onClick={() => {
+          const steps = [
+            "Pending",
+            "Approved",
+            "Dispatched",
+            "On Scene",
+            "Completed",
+          ];
+
+          const currentIndex = steps.indexOf(deploymentStatus);
+
+          if (currentIndex < steps.length - 1) {
+            setDeploymentStatus(steps[currentIndex + 1]);
+          }
+        }}
+        className="rounded-xl bg-cyan-400 px-5 py-3 text-sm font-bold text-black transition hover:bg-cyan-300"
+      >
+        Move to Next Stage →
+      </button>
+    )}
+
+  </div>
+
+</section>
 
         {/* Safety Note */}
         <div className="mt-6 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
