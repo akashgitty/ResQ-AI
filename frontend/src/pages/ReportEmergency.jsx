@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { saveIncident } from "../services/demoStore";
+import { getIncidents, updateIncidentStatus } from "../services/demoStore";
 
 const ReportEmergency = () => {
   const navigate = useNavigate();
@@ -265,9 +267,36 @@ const ReportEmergency = () => {
     }, 1500);
   };
 
-  const handleSendToAuthority = () => {
-    navigate("/authority-dashboard");
-  };
+  
+const handleSendToAuthority = () => {
+  if (!analysis) {
+    alert("Please analyze the emergency first.");
+    return;
+  }
+
+  const incident = saveIncident({
+    type: analysis.incident || "Other",
+    severity: analysis.severity || "Medium",
+    description: description.trim(),
+    location: location
+      ? {
+          latitude: location.latitude,
+          longitude: location.longitude,
+        }
+      : null,
+    imageName: image?.name || null,
+    affectedPeople: Number(analysis.affected_people) || 0,
+    needs: Array.isArray(analysis.needs)
+      ? analysis.needs
+      : [],
+    source: "Citizen Report",
+    status: "Pending Verification",
+  });
+
+  alert(`Report submitted successfully! Report ID: ${incident.id}`);
+
+  navigate("/authority-dashboard");
+};
 
   const getSeverityStyle = (severity) => {
     if (severity === "Critical") {
