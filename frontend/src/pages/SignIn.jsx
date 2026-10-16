@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth } from "../services/coreApi";
 
 function SignIn() {
   const navigate = useNavigate();
@@ -9,29 +8,24 @@ function SignIn() {
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setSubmitting(true);
 
     try {
-      if (import.meta.env.VITE_DEMO_MODE === "true") {
-        const savedUser = localStorage.getItem("resqai.demoUser");
-        const demoUser = savedUser ? JSON.parse(savedUser) : null;
+      const savedUser = localStorage.getItem("resqai.demoUser");
+      const demoUser = savedUser ? JSON.parse(savedUser) : null;
 
-        if (!demoUser || demoUser.email !== email.trim().toLowerCase()) {
-          alert("Demo account not found. Please create an account first.");
-          navigate("/signup");
-          return;
-        }
-
-        navigate("/home");
+      if (!demoUser || demoUser.email !== email.trim().toLowerCase()) {
+        alert("Demo account not found. Please create an account first.");
+        navigate("/signup");
         return;
       }
 
-      await auth.login(email, password);
       navigate("/home");
-    } catch (err) {
-      alert(err.message || "Sign in failed. Please check your details.");
+    } catch {
+      alert("Could not sign in. Please create your account again.");
+      navigate("/signup");
     } finally {
       setSubmitting(false);
     }
@@ -60,7 +54,6 @@ function SignIn() {
               <label className="mb-2 block text-sm font-semibold">
                 Email
               </label>
-
               <input
                 required
                 type="email"
@@ -75,7 +68,6 @@ function SignIn() {
               <label className="mb-2 block text-sm font-semibold">
                 Password
               </label>
-
               <input
                 required
                 type="password"

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../services/coreApi";
 import {
   getSignupDraft,
   clearSignupDraft,
@@ -11,7 +10,6 @@ function LocationSetup() {
 
   const [location, setLocation] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
 
   const detectLocation = () => {
     if (!navigator.geolocation) {
@@ -37,71 +35,35 @@ function LocationSetup() {
     );
   };
 
-  const continueToHome = async () => {
+  const continueToHome = () => {
     const draft = getSignupDraft();
-    const demoMode = import.meta.env.VITE_DEMO_MODE === "true";
+    const savedUser = localStorage.getItem("resqai.demoUser");
+    const existingUser = savedUser ? JSON.parse(savedUser) : null;
 
-    if (demoMode) {
-      const demoUser = {
-        name: draft.name || "ResQ-AI User",
-        email: (draft.email || "").trim().toLowerCase(),
-        location: location
-          ? {
-              latitude: location.latitude,
-              longitude: location.longitude,
-            }
-          : null,
-      };
+    const email = (draft.email || existingUser?.email || "")
+      .trim()
+      .toLowerCase();
 
-      if (!demoUser.email) {
-        alert("Your signup session expired. Please sign up again.");
-        navigate("/signup");
-        return;
-      }
-
-      localStorage.setItem("resqai.demoUser", JSON.stringify(demoUser));
-      clearSignupDraft();
-      navigate("/home");
-      return;
-    }
-
-    if (!location) {
-      alert("Please detect your location before continuing.");
-      return;
-    }
-
-    if (!draft.email || !draft.password) {
+    if (!email) {
       alert("Your signup session expired. Please sign up again.");
       navigate("/signup");
       return;
     }
 
-    setSubmitting(true);
+    const demoUser = {
+      name: draft.name || existingUser?.name || "ResQ-AI User",
+      email,
+      location: location
+        ? {
+            latitude: location.latitude,
+            longitude: location.longitude,
+          }
+        : existingUser?.location || null,
+    };
 
-    try {
-      await auth.register({
-        name: draft.name,
-        email: draft.email,
-        password: draft.password,
-        phone: draft.phone,
-        location: {
-          latitude: location.latitude,
-          longitude: location.longitude,
-          city: draft.city,
-          state: draft.state,
-          postalCode: draft.postalCode,
-          country: draft.country || "India",
-          radiusKm: 300,
-        },
-      });
-
-      clearSignupDraft();
-      navigate("/home");
-    } catch (err) {
-      alert(err.message || "Could not create your account. Please try again.");
-    } finally {
-      setSubmitting(false);
-    }
+    localStorage.setItem("resqai.demoUser", JSON.stringify(demoUser));
+    clearSignupDraft();
+    navigate("/home");
   };
 
   return (
@@ -213,12 +175,10 @@ function LocationSetup() {
 
           <button
             onClick={continueToHome}
-            disabled={submitting || loading}
+            disabled={loading}
             className="mt-7 w-full rounded-xl bg-cyan-400 py-4 font-black text-black transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {submitting
-              ? "Creating your account..."
-              : "Continue to ResQ-AI →"}
+            Continue to ResQ-AI →
           </button>
         </div>
       </div>
