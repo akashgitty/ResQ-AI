@@ -12,42 +12,58 @@ function SignUp() {
     confirmPassword: "",
   });
 
-const handleSubmit = (e) => {
-  e.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-  if (form.password !== form.confirmPassword) {
-    alert("Passwords do not match.");
-    return;
-  }
+    if (form.password !== form.confirmPassword) {
+      alert("Passwords do not match.");
+      return;
+    }
 
-  const strongEnough = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,72}$/.test(form.password);
-  if (!strongEnough) {
-    alert("Password must be 8+ characters with an uppercase letter, a lowercase letter, and a digit.");
-    return;
-  }
-mergeSignupDraft({ name: form.name, email: form.email, password: form.password });
-navigate("/basic-details");   // ← was "/verification", now correct
-};
+    const strongEnough =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,72}$/.test(form.password);
+
+    if (!strongEnough) {
+      alert(
+        "Password must be 8+ characters with an uppercase letter, a lowercase letter, and a digit."
+      );
+      return;
+    }
+
+    // Save signup details for the existing basic-details flow.
+    mergeSignupDraft({
+      name: form.name.trim(),
+      email: form.email.trim().toLowerCase(),
+      password: form.password,
+    });
+
+    // Create a local demo account so backend is not required.
+    localStorage.setItem(
+      "resqai.demoUser",
+      JSON.stringify({
+        name: form.name.trim(),
+        email: form.email.trim().toLowerCase(),
+        location: null,
+      })
+    );
+
+    navigate("/basic-details");
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#050b14] px-6 py-10 text-white">
-
       <div className="w-full max-w-md">
-
         <Link to="/" className="mb-8 block text-center text-2xl font-black">
           ResQ<span className="text-cyan-400">-AI</span>
         </Link>
 
         <div className="rounded-3xl border border-white/10 bg-[#081421] p-8 shadow-2xl">
-
           <div className="mb-8">
             <p className="text-xs font-bold tracking-widest text-cyan-400">
               CREATE ACCOUNT
             </p>
 
-            <h1 className="mt-2 text-3xl font-black">
-              Join ResQ-AI
-            </h1>
+            <h1 className="mt-2 text-3xl font-black">Join ResQ-AI</h1>
 
             <p className="mt-2 text-sm text-slate-500">
               Create your disaster-response profile.
@@ -55,7 +71,6 @@ navigate("/basic-details");   // ← was "/verification", now correct
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-
             <div>
               <label className="mb-2 block text-sm font-semibold">
                 Full Name
@@ -129,7 +144,6 @@ navigate("/basic-details");   // ← was "/verification", now correct
             >
               Create Account →
             </button>
-
           </form>
 
           <p className="mt-6 text-center text-sm text-slate-500">
@@ -138,7 +152,6 @@ navigate("/basic-details");   // ← was "/verification", now correct
               Sign in
             </Link>
           </p>
-
         </div>
       </div>
     </div>
